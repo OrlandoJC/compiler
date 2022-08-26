@@ -1,0 +1,254 @@
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #0a0820;
+    font-family: 'Source Code Pro', monospace;
+    color: white;
+}
+
+main {
+    display: grid;
+    grid-template-columns: 280px minmax(50%, 3fr) 2fr;
+    grid-template-rows: 100vh;
+}
+
+.title {
+    font-weight: bold;
+    padding-left: 20px;
+    font-size: 1.2rem;
+}
+
+.panel__directory {
+    padding: 20px 20px;
+    border-right: .2px solid rgba(128, 128, 128, 0.281);
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    font-size: 1rem;
+}
+
+.panel__output {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px 20px;
+    border-left: .2px solid rgba(128, 128, 128, 0.281);
+}
+
+.files {
+    margin-top: 10px;
+}
+
+.file {
+    color: rgb(173, 173, 173);
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.subtitle {
+    font-size: 0.7rem;
+    display: block;
+    margin-left: 20px;
+    color: grey;
+    margin-top: 0.2rem;
+
+}
+
+.file p {
+    display: inline-block;
+}
+
+.file:hover {
+    background-color: #222045;
+
+    cursor: pointer;
+}
+
+.panel__code {
+    display: flex;
+    flex-direction: column;
+}
+
+.panel__output img {
+    text-align: center;
+    width: 60%;
+}
+
+.breadcumb {
+    display: inline-block;
+    padding: 30px 30px;
+    position: relative;
+    font-size: .9rem;
+}
+
+.breadcumb:hover {
+    background-color:  #131036;
+    cursor: pointer;
+}
+
+.breadcumb--active::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: #4731c5b9;
+    bottom: 0;
+    left: 0;
+}
+
+
+.editor {
+    width: 100%;
+    height: 90%;
+    background-color: #14122d;
+    flex: 1;
+    color: white;
+    padding: 10px 10px;
+    position: relative;
+
+}
+
+
+.codeeditor {
+    font-size: 1rem;
+
+    border: none;
+    outline: none;
+
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+
+    resize: none;
+    /*remove the resize handle on the bottom right*/
+    font-family: 'Source Code Pro', monospace;
+    overflow-y: hidden;
+}
+
+/*editor*/
+
+.line-numbers {
+    width: 20px;
+    text-align: right;
+}
+
+.line-numbers span {
+    counter-increment: linenumber;
+}
+
+.line-numbers span::before {
+    content: counter(linenumber);
+    display: block;
+    color: #506882;
+}
+
+.selected {
+    color: white;
+    background-color: #14122d;
+
+}
+
+.actions {
+    padding: 10px 20px;
+    background-color: #14122d;
+    border-top: .2px solid rgba(128, 128, 128, 0.281);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.button--save {
+    padding: 10px 20px;
+    border-radius: 10px;
+    background-color: #4631c5;
+    display: inline-block;
+    cursor: pointer;
+    font-family: 'Lato';
+    font-weight: 100;
+}
+
+.action {
+    display: inline-block;
+    margin: 0 10px;
+    font-size: 1.1rem;
+}
+
+.notifier {
+    justify-self: start;
+    color: #506882;
+}
+
+/*animation*/
+
+.loader {
+    width: 20px;
+    height: 20px;
+    border: 3px solid #FFF;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+
+.backdrop,
+.codeeditor {
+    font-size: 1rem;
+    font-family: 'Source Code Pro', monospace;
+    width: 92%;
+    height: 100%;
+    position: relative;
+}
+
+.codeeditor {
+    width: 90%;
+    margin: 0;
+    position: absolute;
+    border-radius: 0;
+    background-color: transparent;
+    color: transparent;
+    caret-color: #555555;
+    z-index: 2;
+    resize: none;
+    padding: 0;
+    margin: 0;
+    line-height: 1.4;
+    border: 1px solid transparent;
+}
+
+.backdrop {
+    position: absolute;
+    z-index: 1;
+    border: 1px solid transparent;
+    overflow: auto;
+    pointer-events: none;
+    line-height: 1.4;
+
+}
+
+.custom-area {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+
+}
