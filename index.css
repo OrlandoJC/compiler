@@ -36,7 +36,7 @@ main {
 .panel__output {
     display: flex;
     flex-flow: column;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
     text-align: center;
     padding: 20px 20px;
@@ -91,7 +91,7 @@ main {
 }
 
 .breadcumb:hover {
-    background-color:  #131036;
+    background-color: #131036;
     cursor: pointer;
 }
 
@@ -185,6 +185,61 @@ main {
 .notifier {
     justify-self: start;
     color: #506882;
+}
+
+.empty__container {
+    margin-top: 30%;
+}
+
+.error {
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 40px;
+}
+
+.error img {
+    margin-top: 30px;
+    width: 80%;
+}
+
+.hide{
+    display: none;
+}
+/*table*/
+
+.result {
+    width: 100%;
+    margin-top: 10%;
+}
+
+table.GeneratedTable {
+    width: 100%;
+    background-color: rgb(28 25 62);
+    border-collapse: collapse;
+    border-width: 0px;
+    border-color: #ffffff;
+    border-style: solid;
+    color: #ffffff;
+    border-radius: 4px;
+    overflow: hidden;
+    -webkit-box-shadow: 0px 0px 7px 5px rgba(0, 0, 0, 0.052);
+    box-shadow: 0px 0px 7px 5px rgba(0, 0, 0, 0.018);
+}
+
+table.GeneratedTable td,
+table.GeneratedTable th {
+    border-width: 0px;
+    border-color: #ffffff;
+    border-style: solid;
+    padding: 4px;
+}
+
+table.GeneratedTable thead {
+    background-color: #151235;
+}
+
+table.GeneratedTable tr:nth-child(2n) {
+    background-color: rgb(31 29 67);;
 }
 
 /*animation*/

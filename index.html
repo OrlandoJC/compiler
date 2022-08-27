@@ -61,16 +61,42 @@
                     <span class="notifier" id="notifier"></span>
 
                 </div>
-                <span class="save button--save">
+                <span class="save button--save" id="button-checker">
                     Verificar
                     <!-- <span class="loader"></span> -->
                 </span>
             </div>
         </div>
         <div class="panel panel__output">
-            <img src="./images/Android-rafiki.png" alt="">
-            <p>Aun no has analizado nada</p>
-            <p>Aqui se mostraran los resultados de la comprobacion</p>
+            <div class="empty__container output-empty">
+                <img src="./images/Android-rafiki.png" alt="">
+                <p>Aun no has analizado nada</p>
+                <p>Aqui se mostraran los resultados de la comprobacion</p>
+            </div> 
+            <div class="result output-table" id="output-table">
+                <!-- <table class="GeneratedTable">
+                    <thead>
+                      <tr>
+                        <th>Lexema</th>
+                        <th>Tipo</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Ita5</td>
+                        <td>Cell</td>
+                      </tr>
+                      <tr>
+                        <td>Cell</td>
+                        <td>Cell</td>
+                      </tr>
+                      <tr>
+                        <td>Cell</td>
+                        <td>Cell</td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>  -->
         </div>
     </main>
 

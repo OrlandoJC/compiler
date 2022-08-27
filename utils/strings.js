@@ -1,0 +1,1 @@
+export const isValid = (regex, string) => regex.test(string)

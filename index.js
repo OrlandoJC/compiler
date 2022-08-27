@@ -1,7 +1,6 @@
 
-// console.log(
-//     languages[4].regex.test("#pepe$")
-// )
+
+import Compiler from "./Compiler.js";
 
 import AppCompiler from './AppCompiler.js';
 import colorMap from './config/colors.config.js'
@@ -83,5 +82,3 @@ function applyColors(text)
 
 
 const app = new AppCompiler();
-
-console.log(app)

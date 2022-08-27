@@ -5,14 +5,14 @@ class Editor {
                 {
                     name: "programa1.eq2",
                     date: new Date(),
-                    content: "Ment# #numero$, #aux$, #res$;\nGcad# #nombre$;\n\n#numero$ = #aux$ + #res$;\n\nif22 ( #numero$ > 12322 ) {\n  #numero$ = #aux$ / #res$;\n} else22 {\n  #numero$ = #aux$ * 3;\n}\n\n\n\n\n",
+                    content: "Ment# #numero$ , #aux$ , #res$ ;\nGcad# #nombre$ ;\n\n#numero$ = #aux$ + #res$ ;\n\nif22 ( #numero$ > 12322 ) {\n  #numero$ = #aux$ / #random$ ;\n} else22 {\n  #numero$ = #aux$ * 3 ;\n}\n\n\n\n\n",
                 }
             ],
             pages: [
                 {
                     name: "programa1.eq2",
                     date: new Date(),
-                    content: "Ment# #numero$, #aux$, #res$;\nGcad# #nombre$;\n\n#numero$ = #aux$ + #res$;\n\nif22 ( #numero$ > 12322 ) {\n  #numero$ = #aux$ / #res$;\n} else22 {\n  #numero$ = #aux$ * 3;\n}\n\n\n\n\n",
+                    content: "Ment# #numero$ , #aux$ , #res$ ;\nGcad# #nombre$ ;\n\n#numero$ = #aux$ + #res$ ;\n\nif22 ( #numero$ > 12322 ) {\n  #numero$ = #aux$ / #random$ ;\n} else22 {\n  #numero$ = #aux$ * 3 ;\n}\n\n\n\n\n",
                 },
                 {
                     name: "programa2.eq2",

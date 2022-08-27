@@ -87,3 +87,14 @@ export const onCloseTab = (element, handler, flush) => {
         }
     })
 }
+
+export const onClickAnalyzer = (element, handler, analyzer) => {
+    
+    element.addEventListener("click", () => {
+        const code = document.getElementById("codeeditor")
+
+        const result = analyzer(code.value)
+        
+        handler(result)
+    })
+}
