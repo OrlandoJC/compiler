@@ -9,7 +9,7 @@ const regex = [
     },
     {
         id: "integer",
-        regex: /^(-)?[0-9]*22$/
+        regex: /^(-)?[0-9]*22$/,
     },
     {
         id: "condition",
@@ -30,6 +30,14 @@ const regex = [
     {
         id: "separator",
         regex: /\(|\)|\{|\}|\,|\;/
+    }, 
+    {
+        id : "operator_logical",
+        regex: /&&|\|\|/
+    },
+    {
+        id : "operator_arimetical", 
+        regex : /\+|\-|\*|\/|%/
     }
 ]
 

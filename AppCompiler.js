@@ -1,21 +1,26 @@
 import Editor from '/Editor.js'
 import coloring from './utils/coloring.js';
 import Compiler from './Compiler.js';
-import { onFileTabClick, onFilePanelClick, onChangeCode, onCloseTab, onClickAnalyzer } from './events/index.js'
+import { onFileTabClick, onFilePanelClick, onChangeCode, onCloseTab, onClickAnalyzer, onAddFile } from './events/index.js'
 
 class AppCompiler {
     constructor() {
         this.editor = new Editor();
         this.compiler = new Compiler()
-        this._localListeners()
+        this._localListeners();
+        this._executeStart();
+    }
+
+    saveLocal() {
+        localStorage.setItem("editor", JSON.stringify(editor.state))
     }
 
     tabMarkup(name, active) {
         return `
             <div class="breadcumb breadcumb--active" data-filename=${name}>
-                <i class="fa fa-file-o" aria-hidden="true"></i>
+                <ion-icon name="document-outline"></ion-icon>
                     ${name}
-                 <i class="fa fa-times" aria-hidden="true"></i>
+                <ion-icon class="delete" name="close-outline"></ion-icon>
             </div>
         `
     }
@@ -23,8 +28,8 @@ class AppCompiler {
     fileMarkup(file) {
         return `
             <div class="file"  data-filename=${file.name}>
-                <i class="fa fa-file-o" aria-hidden="true"></i>
-                <p>random date</p>
+                <ion-icon name="document-outline"></ion-icon>
+                <p>${file.date}</p>
                 <span class="subtitle">${file.name}</span>
             </div>
         `
@@ -32,11 +37,10 @@ class AppCompiler {
 
     tableMarkup(results) {
         return `
-           ${
-            results.length === 0
+           ${results.length === 0
                 ? `<div class="error">
                     <img src="./images/access.png"/>
-                    <p>Al parecer, el codigo no es correcto 😥 No tengon nada para mostrar. Corrigelo</p>
+                    <p>Al parecer, el codigo no es correcto 😥 No tengo nada para mostrar. Corrigelo</p>
                     </div>`
                 : `<table class="GeneratedTable">
                     <thead>
@@ -46,17 +50,21 @@ class AppCompiler {
                         </tr>
                     </thead>
                     <tbody>
-                        ${
-                            results.map(result => `
+                        ${results.map(result => `
                                 <tr>
                                     <td>${result.token}</td>
                                     <td>${result.type}</td>
                                 </tr>
                             `).join("")
-                        }
+                }
                     </tbody>
                 </table>`
             }`;
+    }
+
+    loadFiles() {
+        const panelFiles = document.getElementById("panelfiles-container")
+
     }
 
     generateTable(results) {
@@ -83,7 +91,8 @@ class AppCompiler {
         const panelFiles = document.getElementById("panelfiles-container")
         const activeTab = document.querySelector(".breadcumb--active")
 
-        activeTab.classList.remove("breadcumb--active")
+        if (activeTab)
+            activeTab.classList.remove("breadcumb--active")
 
         editorTabs.innerHTML += this.tabMarkup(page.name)
         panelFiles.innerHTML += this.fileMarkup(page)
@@ -128,18 +137,111 @@ class AppCompiler {
         const editorBody = document.getElementById("custom-area")
         const textArea = document.getElementById("codeeditor")
 
-        // editorBody.textContent = source
-
         textArea.value = (source)
         editorBody.innerHTML = coloring(textArea.value);
 
         backdrop.scrollTop = textArea.scrollTop;
     }
 
+    _executeStart() {
+
+        if (localStorage.getItem("notShowAgain")) return
+
+        const tour = new Shepherd.Tour({
+            useModalOverlay: true,
+            defaultStepOptions: {
+                classes: 'shadow-md bg-purple-dark',
+                scrollTo: true
+            }
+        });
+
+        tour.addStep({
+            id: 'example-step',
+            text: 'Añade archivos en el directorio',
+            attachTo: {
+                element: '.panel__directory',
+                on: 'right'
+            },
+            classes: 'example-step-extra-class',
+            buttons: [
+                {
+                    text: 'Siguiente',
+                    action: tour.next
+                }
+            ]
+        });
+
+        tour.addStep({
+            id: 'example-step',
+            text: 'Aqui se verá el codigo',
+            attachTo: {
+                element: '.editor',
+                on: 'right'
+            },
+            classes: 'example-step-extra-class',
+            buttons: [
+                {
+                    text: 'Siguiente',
+                    action: tour.next
+                }
+            ]
+        });
+
+        tour.addStep({
+            id: 'example-step',
+            text: 'Oprime el boton verificar para hacer el analisis del codigo',
+            attachTo: {
+                element: '.button--save',
+                on: 'top'
+            },
+            classes: 'example-step-extra-class',
+            buttons: [
+                {
+                    text: 'Siguiente',
+                    action: tour.next
+                }
+            ]
+        });
+
+        tour.addStep({
+            id: 'example-step',
+            text: 'En esta ventana se mostraran los resultados de la evaluacion',
+            attachTo: {
+                element: '.panel__output',
+                on: 'left'
+            },
+            classes: 'example-step-extra-class',
+            buttons: [
+                {
+                    text: 'Empezar 😁',
+                    action: tour.next
+                },
+                {
+                    text: "Empezar y no volver a mostrar ✅",
+                    action: (a) => {
+                        localStorage.setItem("notShowAgain", "true")
+                        tour.complete()
+                    }
+                }
+
+            ]
+        });
+
+
+        tour.start()
+    }
+
+    _loadLocalData() {
+        if (localStorage.getItem("editor")) {
+            const localData = JSON.parse(localStorage.getItem("editor"))
+        }
+    }
+
     _localListeners() {
         const editorTabs = document.getElementById("tabs-container")
         const panelFiles = document.getElementById("panelfiles-container")
         const codeEditor = document.getElementById("codeeditor")
+        const buttonNew = document.getElementById("button__new")
         const buttonCheck = document.getElementById("button-checker")
 
         onFileTabClick(editorTabs, this.handleFileTabClick.bind(this))
@@ -147,6 +249,7 @@ class AppCompiler {
         onChangeCode(codeEditor, this.handleChangeCode.bind(this))
         onCloseTab(editorTabs, this.handleCloseTab.bind(this), this.injectCode)
         onClickAnalyzer(buttonCheck, this.handleClickAnalyze.bind(this), this.compiler.sematicAnalisys)
+        onAddFile(buttonNew, this.handleAddFile.bind(this))
     }
 
     handleFileTabClick(pagename) {
@@ -171,8 +274,15 @@ class AppCompiler {
     }
 
     handleClickAnalyze(results) {
-        console.log(results)
         this.generateTable(results)
+    }
+
+    handleAddFile(filename) {
+        this.editor.createPage(filename, (file) => {
+            this.insertNewPage(file)
+            this.highlightFileDirectory(file.name)
+            this.injectCode(file.content)
+        })
     }
 }
 

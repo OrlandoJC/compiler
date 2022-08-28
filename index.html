@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compiler🤖</title>
+    
     <script src="https://use.fontawesome.com/f1f9921520.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,29 +19,31 @@
 <body>
     <main>
         <div class="panel panel__directory">
-            <div class="files" id="panelfiles-container">
-                <span class="title">Compilador 🔎</span>
-
-                <div class="file" data-filename="programa1.eq2">
-                    <i class="fa fa-file-o" aria-hidden="true"></i>
+            <div>
+                <span class="title">Compilador 🔎 </span>
+                <span class="button--new" id="button__new">Añadir <ion-icon name="add-outline"></ion-icon></span>
+                <div class="files" id="panelfiles-container">
+                <div class="file" data-filename="sample.eq2">
+                    <ion-icon name="document-outline"></ion-icon>
                     <p>Hoy 3:30 pm</p>
-                    <span class="subtitle">programa1.eq1</span>
+                    <span class="subtitle">sample.eq1</span>
 
                 </div>
-                <div class="file" data-filename="programa2.eq2">
-                    <i class="fa fa-file-o" aria-hidden="true"></i>
+                <div class="file" data-filename="sample_empty.eq2">
+                    <ion-icon name="document-outline"></ion-icon>
                     <p>Ayer 4:30pm</p>
-                    <span class="subtitle">programa2.eq2</span>
-
+                    <span class="subtitle">sample_empty.eq2</span>
+                </div>
                 </div>
             </div>
             <div class="configuration">
-                <span><i class="fa fa-cog" aria-hidden="true" style="font-size:1.3rem;"></i></span>
+                <span><ion-icon name="settings-outline"></ion-icon></span>
             </div>
         </div>
         <div class="panel panel__code">
             <div class="breadcumbs" id="tabs-container">
                 <!-- <div class="breadcumb breadcumb--active" data-filename="programa1.eq2"><i class="fa fa-file-o" aria-hidden="true"></i> programa1.eq2 <i class="fa fa-times" aria-hidden="true"></i></div> -->
+                
             </div>
             <div class="editor">
                 <div class="backdrop">
@@ -53,10 +56,10 @@
             <div class="actions">
                 <div class="file__actions">
                     <div class="action undo">
-                        <i class="fa fa-undo" aria-hidden="true"></i>
+                        <ion-icon name="reload-outline"></ion-icon>
                     </div>
                     <div class="action save">
-                        <i class="fa fa-save" aria-hidden="true"></i>
+                        <ion-icon name="save-outline"></ion-icon>
                     </div>
                     <span class="notifier" id="notifier"></span>
 
@@ -74,36 +77,20 @@
                 <p>Aqui se mostraran los resultados de la comprobacion</p>
             </div> 
             <div class="result output-table" id="output-table">
-                <!-- <table class="GeneratedTable">
-                    <thead>
-                      <tr>
-                        <th>Lexema</th>
-                        <th>Tipo</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>Ita5</td>
-                        <td>Cell</td>
-                      </tr>
-                      <tr>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                      </tr>
-                      <tr>
-                        <td>Cell</td>
-                        <td>Cell</td>
-                      </tr>
-                    </tbody>
-                  </table>
-            </div>  -->
+            </div> 
         </div>
     </main>
 
     <div class="config__panel">
 
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@8.3.1/dist/js/shepherd.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@8.3.1/dist/css/shepherd.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/locale/es-mx.js"></script>
     <script src="index.js" type="module"></script>
 </body>
 

@@ -3,6 +3,7 @@ import { isValid } from "./utils/strings.js";
 import regex from './config/type.matchers.js'
 
 class Compiler {
+    
     sematicAnalisys(string) {
         let table = [];
         let lines = cleanSpaces(string.split("\n"))
@@ -17,16 +18,16 @@ class Compiler {
             if (isVariable) {
                 let type = tokens[0];
                 //asigna el typeid dependiendo de la variable declada
-                if (type === "Ment#") typeid = "int"
-                if (type === "Gcad#") typeid = "string"
-                if (type === "Ocar#") typeid = "chars"
+                if (type === "Ment#") typeid = "Ment#"
+                if (type === "Gcad#") typeid = "Gcad#"
+                if (type === "Ocar#") typeid = "Ocar#"
             }
 
             // itera sobre todos los tokens de la linea
             for (let token in tokens) {
                 let match  = regex.find(matchers => isValid(matchers.regex, tokens[token])) // encuentra la expresion regular que hace match con el token
                 let exists = table.some(tokenTable => tokenTable.token == tokens[token]) // verifica si el token existe en la tabla
-
+                console.log (tokens[token], match)
                 // si el token no existe en la tabla y hay un nuevo match, se añade a la tabla
                 if (match && !exists) {
                     table.push({ //añade el elemento al resultado

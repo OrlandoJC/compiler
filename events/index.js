@@ -1,10 +1,12 @@
+import coloring from "../utils/coloring.js";
+
 export const onFileTabClick = function (element, handle) {
     element.addEventListener("click", (event) => {
         const target = event.target;
         const tabOpen = target.closest('.breadcumb')
         const activeTab = document.querySelector(".breadcumb--active")
 
-        if (target.nodeName == "I") return
+        if (target.nodeName == "ION-ICON") return
         if (!tabOpen) return
 
         activeTab.classList.remove("breadcumb--active")
@@ -26,13 +28,14 @@ export const onFilePanelClick = function (element, handle) {
         if (a) {
             codeEditor.disabled = false;
             handle(a.dataset.filename)
-
         }
     })
 }
 
 export const onChangeCode = function (element, handle) {
     const notifier = document.getElementById("notifier")
+    let customArea = document.querySelector(".custom-area");
+    let backdrop = document.querySelector(".backdrop");
 
     function debounce(func, timeout = 300) {
         let timer;
@@ -51,18 +54,29 @@ export const onChangeCode = function (element, handle) {
         const filename = activeTab.dataset.filename
 
         handle(filename, codeEditor.value)
+
         notifier.textContent = "Cambios guardados 😁";
+
         setTimeout(() => {
             notifier.textContent = "";
         }, 500)
     }, 500))
+
+
+    element.addEventListener("input", function () {
+        customArea.innerHTML = coloring(element.value);
+    });
+
+    element.addEventListener("scroll", function () {
+        backdrop.scrollTop = element.scrollTop;
+    });
 }
 
 export const onCloseTab = (element, handler, flush) => {
     element.addEventListener("click", (e) => {
         const target = e.target;
-
-        if (target.nodeName == "I" && target.classList.contains("fa-times")) {
+        console.log(target.nodeName)
+        if (target.nodeName == "ION-ICON" && target.classList.contains("delete")) {
             const tabSelected = target.closest(".breadcumb")
 
             if (tabSelected.classList.contains("breadcumb--active")) {
@@ -89,12 +103,42 @@ export const onCloseTab = (element, handler, flush) => {
 }
 
 export const onClickAnalyzer = (element, handler, analyzer) => {
-    
+
     element.addEventListener("click", () => {
         const code = document.getElementById("codeeditor")
 
         const result = analyzer(code.value)
-        
+
         handler(result)
     })
+}
+
+
+export const onAddFile = (element, handler) => {
+
+    let items = document.getElementById("tabs-container")
+    let editor = document.getElementById("codeeditor")
+
+    let sortable = Sortable.create(items, {
+        animation: 150,
+        easing: "cubic-bezier(1, 0, 0, 1)"
+    })
+
+    element.addEventListener("click", () => {
+        let filename = prompt("Ingresa el nombre del archivo");
+
+        if (filename != null) {
+            handler(filename)
+            editor.disabled = false;
+            setTimeout(() => {
+                const tabsContainer = document.getElementById("tabs-container")
+                tabsContainer.scrollTo({
+                    left: tabsContainer.scrollWidth,
+                    top: 0,
+                    behavior: 'smooth'
+                })
+            }, 0)
+        }
+    })
+
 }
