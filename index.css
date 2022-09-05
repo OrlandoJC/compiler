@@ -19,7 +19,7 @@ main {
     grid-template-rows: 100vh;
 }
 
-ion-icon  {
+ion-icon {
     font-size: 1.2rem;
 }
 
@@ -60,8 +60,8 @@ ion-icon  {
     text-align: center;
     padding: 20px 20px;
     border-left: .2px solid rgba(128, 128, 128, 0.281);
+    overflow-y: auto;
 }
-
 
 
 .files {
@@ -131,7 +131,7 @@ ion-icon  {
 }
 
 .breadcumbs::-webkit-scrollbar-thumb {
-    background-color:#1e2935;
+    background-color: #1e2935;
     outline: 1px solid #131036;
 }
 

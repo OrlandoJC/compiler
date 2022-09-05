@@ -42,7 +42,8 @@ class AppCompiler {
                     <img src="./images/access.png"/>
                     <p>Al parecer, el codigo no es correcto 😥 No tengo nada para mostrar. Corrigelo</p>
                     </div>`
-                : `<table class="GeneratedTable">
+                : `<h3>Tabla de simbolos </h3> <br>
+                <table class="GeneratedTable">
                     <thead>
                         <tr>
                             <th>Lexema</th>
@@ -62,9 +63,34 @@ class AppCompiler {
             }`;
     }
 
+    errorTableMarkup(results) {
+        return `${ results.length > 0 ? `<br>  <h3>Tabla de Errores </h3> <br>  
+            <table class="GeneratedTable">
+                <thead>
+                    <tr>
+                        <th>Token</th>
+                        <th>lexema</th>
+                        <th>line</th>
+                        <th>description</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    ${results.map(result => `
+                            <tr>
+                                <td>${result.token}</td>
+                                <td>${result.lexema}</td>
+                                <td>${result.line}</td>
+                                <td>${result.message}</td>
+                            </tr>
+                        `).join("")
+                    }
+                </tbody>
+            </table>` : ""}`
+    }
+
     loadFiles() {
         const panelFiles = document.getElementById("panelfiles-container")
-
     }
 
     generateTable(results) {
@@ -73,6 +99,12 @@ class AppCompiler {
 
         empty.classList.add("hide")
         output.innerHTML = this.tableMarkup(results)
+    }
+
+
+    generateErrorTable(errors) {
+        const output = document.getElementById("output-table");
+        output.innerHTML += this.errorTableMarkup(errors)
     }
 
     highlightFileDirectory(pagename) {
@@ -227,7 +259,6 @@ class AppCompiler {
             ]
         });
 
-
         tour.start()
     }
 
@@ -248,7 +279,7 @@ class AppCompiler {
         onFilePanelClick(panelFiles, this.handleFilePanelClick.bind(this))
         onChangeCode(codeEditor, this.handleChangeCode.bind(this))
         onCloseTab(editorTabs, this.handleCloseTab.bind(this), this.injectCode)
-        onClickAnalyzer(buttonCheck, this.handleClickAnalyze.bind(this), this.compiler.sematicAnalisys)
+        onClickAnalyzer(buttonCheck, this.handleClickAnalyze.bind(this), this.compiler.sematicAnalisys, this.compiler.sematicAnalisys2)
         onAddFile(buttonNew, this.handleAddFile.bind(this))
     }
 
@@ -273,8 +304,9 @@ class AppCompiler {
         this.highlightFileDirectory(this.editor.getFile(pagename).name)
     }
 
-    handleClickAnalyze(results) {
+    handleClickAnalyze(results, grammar) {
         this.generateTable(results)
+        this.generateErrorTable(grammar)
     }
 
     handleAddFile(filename) {

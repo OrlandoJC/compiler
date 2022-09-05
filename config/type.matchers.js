@@ -1,16 +1,19 @@
 const regex = [
     {
         id: "type",
-        regex: /^(Ment|Gcad|Ocar)#$/
-    },
-    {
-        id: "float",
-        regex: /-?[0-9]*22.[0-9]+/
+        regex: /^(Ment|Gcad|Ocar)#$/,
     },
     {
         id: "integer",
         regex: /^(-)?[0-9]*22$/,
+        type : "Ment#"
     },
+    {
+        id: "float",
+        regex: /-?[0-9]*22.[0-9]+/,
+        type : "Gcad#"
+    },
+    
     {
         id: "condition",
         regex: /^(if|then|else)22$/

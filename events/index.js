@@ -1,9 +1,10 @@
 import coloring from "../utils/coloring.js";
+import { timerMessage } from "../utils/timers.js";
 
 export const onFileTabClick = function (element, handle) {
     element.addEventListener("click", (event) => {
-        const target = event.target;
-        const tabOpen = target.closest('.breadcumb')
+        const target    = event.target;
+        const tabOpen   = target.closest('.breadcumb')
         const activeTab = document.querySelector(".breadcumb--active")
 
         if (target.nodeName == "ION-ICON") return
@@ -23,11 +24,11 @@ export const onFilePanelClick = function (element, handle) {
 
     element.addEventListener("click", (event) => {
         const target = event.target;
-        let a = target.closest(".file")
+        let file = target.closest(".file")
 
-        if (a) {
+        if (file) {
             codeEditor.disabled = false;
-            handle(a.dataset.filename)
+            handle(file.dataset.filename)
         }
     })
 }
@@ -35,7 +36,7 @@ export const onFilePanelClick = function (element, handle) {
 export const onChangeCode = function (element, handle) {
     const notifier = document.getElementById("notifier")
     let customArea = document.querySelector(".custom-area");
-    let backdrop = document.querySelector(".backdrop");
+    let backdrop   = document.querySelector(".backdrop");
 
     function debounce(func, timeout = 300) {
         let timer;
@@ -46,7 +47,7 @@ export const onChangeCode = function (element, handle) {
     }
 
     element.addEventListener("keyup", debounce(() => {
-        const activeTab = document.querySelector(".breadcumb--active")
+        const activeTab  = document.querySelector(".breadcumb--active")
         const codeEditor = document.getElementById("codeeditor")
 
         if (!activeTab) return
@@ -55,11 +56,7 @@ export const onChangeCode = function (element, handle) {
 
         handle(filename, codeEditor.value)
 
-        notifier.textContent = "Cambios guardados 😁";
-
-        setTimeout(() => {
-            notifier.textContent = "";
-        }, 500)
+        timerMessage(notifier, "cambios guardados ✅", 500)
     }, 500))
 
 
@@ -75,7 +72,7 @@ export const onChangeCode = function (element, handle) {
 export const onCloseTab = (element, handler, flush) => {
     element.addEventListener("click", (e) => {
         const target = e.target;
-        console.log(target.nodeName)
+
         if (target.nodeName == "ION-ICON" && target.classList.contains("delete")) {
             const tabSelected = target.closest(".breadcumb")
 
@@ -102,20 +99,18 @@ export const onCloseTab = (element, handler, flush) => {
     })
 }
 
-export const onClickAnalyzer = (element, handler, analyzer) => {
-
+export const onClickAnalyzer = (element, handler, analyzer, sintaxAnalizer) => {
     element.addEventListener("click", () => {
         const code = document.getElementById("codeeditor")
 
         const result = analyzer(code.value)
+        const errors = sintaxAnalizer(code.value, result)
 
-        handler(result)
+        handler(result, errors)
     })
 }
 
-
 export const onAddFile = (element, handler) => {
-
     let items = document.getElementById("tabs-container")
     let editor = document.getElementById("codeeditor")
 
