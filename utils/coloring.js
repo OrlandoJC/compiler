@@ -10,7 +10,6 @@ function coloring(text) {
             let integers = new RegExp("-?[0-9]*22 ")
             let identifiers = new RegExp("\#[a-z]*[$]")
             let floats = new RegExp("-?[0-9]*22[\.][0-9]* ")
-
             if (integers.test(m)) {
                 return `<span style="color:#e56674">${m}</span>`;
             }

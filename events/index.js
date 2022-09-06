@@ -1,4 +1,5 @@
 import coloring from "../utils/coloring.js";
+import makeFileFromText, { downloadFile } from "../utils/filedownload.js";
 import { timerMessage } from "../utils/timers.js";
 
 export const onFileTabClick = function (element, handle) {
@@ -136,4 +137,17 @@ export const onAddFile = (element, handler) => {
         }
     })
 
+}
+
+export const onDowloadCode = (element, handler) => {
+    element.addEventListener("click", (e) => {
+        const editor    = document.getElementById("codeeditor")
+        const activeTab = document.querySelector(".breadcumb--active");
+        
+        if(editor.value == 0) return
+
+        const fileUrl = makeFileFromText(editor.value)
+
+        downloadFile(fileUrl, activeTab.dataset.filename)
+    })
 }

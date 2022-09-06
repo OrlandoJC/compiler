@@ -1,7 +1,7 @@
 import Editor from '/Editor.js'
 import coloring from './utils/coloring.js';
 import Compiler from './Compiler.js';
-import { onFileTabClick, onFilePanelClick, onChangeCode, onCloseTab, onClickAnalyzer, onAddFile } from './events/index.js'
+import { onFileTabClick, onFilePanelClick, onChangeCode, onCloseTab, onClickAnalyzer, onAddFile, onDowloadCode } from './events/index.js'
 
 class AppCompiler {
     constructor() {
@@ -269,11 +269,12 @@ class AppCompiler {
     }
 
     _localListeners() {
-        const editorTabs = document.getElementById("tabs-container")
-        const panelFiles = document.getElementById("panelfiles-container")
-        const codeEditor = document.getElementById("codeeditor")
-        const buttonNew = document.getElementById("button__new")
+        const editorTabs  = document.getElementById("tabs-container")
+        const panelFiles  = document.getElementById("panelfiles-container")
+        const codeEditor  = document.getElementById("codeeditor")
+        const buttonNew   = document.getElementById("button__new")
         const buttonCheck = document.getElementById("button-checker")
+        const saveButton  = document.getElementById("save-button")
 
         onFileTabClick(editorTabs, this.handleFileTabClick.bind(this))
         onFilePanelClick(panelFiles, this.handleFilePanelClick.bind(this))
@@ -281,6 +282,7 @@ class AppCompiler {
         onCloseTab(editorTabs, this.handleCloseTab.bind(this), this.injectCode)
         onClickAnalyzer(buttonCheck, this.handleClickAnalyze.bind(this), this.compiler.sematicAnalisys, this.compiler.sematicAnalisys2)
         onAddFile(buttonNew, this.handleAddFile.bind(this))
+        onDowloadCode(saveButton, this.handleDownloadCode.bind(this))
     }
 
     handleFileTabClick(pagename) {
@@ -315,6 +317,10 @@ class AppCompiler {
             this.highlightFileDirectory(file.name)
             this.injectCode(file.content)
         })
+    }
+
+    handleDownloadCode()  {
+
     }
 }
 
