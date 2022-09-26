@@ -100,12 +100,12 @@ export const onCloseTab = (element, handler, flush) => {
     })
 }
 
-export const onClickAnalyzer = (element, handler, analyzer, sintaxAnalizer) => {
+export const onClickAnalyzer = (element, handler, analyzer, semantic) => {
     element.addEventListener("click", () => {
         const code = document.getElementById("codeeditor")
 
         const result = analyzer(code.value)
-        const errors = sintaxAnalizer(code.value, result)
+        const errors = semantic(code.value, result)
 
         handler(result, errors)
     })

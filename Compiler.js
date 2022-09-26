@@ -14,7 +14,7 @@ class Compiler {
         this.simbolTable = []
     }
 
-    sematicAnalisys(string) {
+    tokenTable(string) {
         let table = [];
         let lines = cleanSpaces(string.split("\n"))
 
@@ -56,12 +56,7 @@ class Compiler {
     }
 
 
-    /*
-        *todo
-        La comprobacion de operandos es candidato a extraerse en un metodo
-    */
-
-    sematicAnalisys2(string, table) {
+    semanticAnalisis(string, table) {
         let lines = string.split("\n")
         let lineNumber = 0;
         let errors = []

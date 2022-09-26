@@ -1,4 +1,4 @@
-import Editor from '/Editor.js'
+import Editor from './Editor.js'
 import coloring from './utils/coloring.js';
 import Compiler from './Compiler.js';
 import { onFileTabClick, onFilePanelClick, onChangeCode, onCloseTab, onClickAnalyzer, onAddFile, onDowloadCode } from './events/index.js'
@@ -280,7 +280,7 @@ class AppCompiler {
         onFilePanelClick(panelFiles, this.handleFilePanelClick.bind(this))
         onChangeCode(codeEditor, this.handleChangeCode.bind(this))
         onCloseTab(editorTabs, this.handleCloseTab.bind(this), this.injectCode)
-        onClickAnalyzer(buttonCheck, this.handleClickAnalyze.bind(this), this.compiler.sematicAnalisys, this.compiler.sematicAnalisys2)
+        onClickAnalyzer(buttonCheck, this.handleClickAnalyze.bind(this), this.compiler.tokenTable, this.compiler.semanticAnalisis)
         onAddFile(buttonNew, this.handleAddFile.bind(this))
         onDowloadCode(saveButton, this.handleDownloadCode.bind(this))
     }
