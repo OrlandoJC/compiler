@@ -171,12 +171,12 @@ class Compiler {
                     if (line.includes("||")) {
                         triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[0], operador: "=" })
                         triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[2], operador: firstMatch.split(" ")[1] })
-                        triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "TRUE", operador: lineCounter + 6 })
-                        triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "FALSE", operador: lineCounter + 1 })
+                        triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "TRUE", operador: lineCounter + 5 })
+                        triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "FALSE", operador: lineCounter  })
 
                         triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: secondMatch.split(" ")[0], operador: "=" })
                         triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: secondMatch.split(" ")[2], operador: secondMatch.split(" ")[1] })
-                        triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "TRUE", operador: lineCounter + 2 })
+                        triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "TRUE", operador: lineCounter + 1 })
                         triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "FALSE", operador: " " })
                     }
 

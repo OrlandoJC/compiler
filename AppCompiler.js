@@ -127,7 +127,7 @@ class AppCompiler {
             <div>
                 <span class="button-pdf" id=button-pdf>
                 <ion-icon class="icon" name="download-outline"></ion-icon>
-                    <span class="text">importar como pdf</span>
+                    <span class="text">exportar como pdf</span>
                 </ion-item>
             </div>
             </div>` : ""}`
@@ -162,8 +162,6 @@ class AppCompiler {
         const btnGenerate = document.getElementById("button-pdf")
 
         btnGenerate.addEventListener("click", () => {
-            console.log("descargar")
-            console.log(triploTable)
             downloadTable(triploTable)
         })
     }
