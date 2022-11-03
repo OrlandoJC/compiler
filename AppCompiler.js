@@ -1,7 +1,9 @@
 import Editor from './Editor.js'
 import coloring from './utils/coloring.js';
 import Compiler from './Compiler.js';
-import { onFileTabClick, onFilePanelClick, onChangeCode, onCloseTab, onClickAnalyzer, onAddFile, onDowloadCode } from './events/index.js'
+import { onFileTabClick, onFilePanelClick, onChangeCode, onCloseTab, onClickAnalyzer, onAddFile, onDowloadCode, onHighLightLineErrors } from './events/index.js'
+import downloadTable from './downloadPDF.js';
+
 
 class AppCompiler {
     constructor() {
@@ -25,6 +27,8 @@ class AppCompiler {
         `
     }
 
+
+
     fileMarkup(file) {
         return `
             <div class="file"  data-filename=${file.name}>
@@ -42,8 +46,8 @@ class AppCompiler {
                     <img src="./images/access.png"/>
                     <p>Al parecer, el codigo no es correcto 😥 No tengo nada para mostrar. Corrigelo</p>
                     </div>`
-                : `<h3>Tabla de simbolos </h3> <br>
-                <table class="GeneratedTable">
+                : `<h4 class="simbol-table">Tabla de simbolos <i class="fa fa-file-pdf-o" aria-hidden="true"></i></h4> <br>
+                <div><table class="GeneratedTable">
                     <thead>
                         <tr>
                             <th>Lexema</th>
@@ -54,25 +58,28 @@ class AppCompiler {
                         ${results.map(result => `
                                 <tr>
                                     <td>${result.token}</td>
-                                    <td>${result.type}</td>
+                                    <td> <p ${result.type && 'style="background: #5b1cab; display:inline-block; padding:5px; border-radius:5px"'} >${result.type}</p> </td>
                                 </tr>
                             `).join("")
                 }
                     </tbody>
-                </table>`
+                </table>
+
+                </div>`
             }`;
     }
 
     errorTableMarkup(results) {
-        return `${ results.length > 0 ? `<br>  <h3>Tabla de Errores </h3> <br>  
-            <table class="GeneratedTable">
+        console.log(results)
+        return `${results.length > 0 ? `<br>  <h4 class="error-table">Tabla de Errores <i class="fa fa-bug" aria-hidden="true"></i>
+        </h4> <br>  
+            <div><table class="GeneratedTable">
                 <thead>
                     <tr>
                         <th>Token</th>
                         <th>lexema</th>
                         <th>line</th>
                         <th>description</th>
-
                     </tr>
                 </thead>
                 <tbody>
@@ -81,13 +88,52 @@ class AppCompiler {
                                 <td>${result.token}</td>
                                 <td>${result.lexema}</td>
                                 <td>${result.line}</td>
-                                <td>${result.message}</td>
+                                <td>${result.message} ${result.type || ""}
+                                <i class="fa fa-info-circle" aria-hidden="true"></i> </td>
                             </tr>
                         `).join("")
-                    }
+            }
                 </tbody>
-            </table>` : ""}`
+            </table>
+            </div>` : ""}`
     }
+
+
+    //  {pos: 1, dato_obj: 'T1', dato_fuente: '#aux$', operador: '='}
+    triploTableMarkup(results) {
+        return `${results.length > 0 ? `<br>  <h4 class="triplo-table">Tabla de Triplos <i class="fa fa-list-ol" aria-hidden="true"></i></h4> <br>  
+            <div>
+            <div id="generated_table_triplo"><table class="GeneratedTable">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Dato objeto</th>
+                        <th>Dato fuente</th>
+                        <th>operador</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${results.map(result => `
+                            <tr>
+                                <td>${result.pos}</td>
+                                <td>${result.dato_obj}</td>
+                                <td>${result.dato_fuente}</td>
+                                <td>${result.operador}  
+                            </tr>
+                        `).join("")
+            }
+                </tbody>
+            </table>
+            <div>
+                <span class="button-pdf" id=button-pdf>
+                <ion-icon class="icon" name="download-outline"></ion-icon>
+                    <span class="text">importar como pdf</span>
+                </ion-item>
+            </div>
+            </div>` : ""}`
+    }
+
+
 
     loadFiles() {
         const panelFiles = document.getElementById("panelfiles-container")
@@ -105,6 +151,21 @@ class AppCompiler {
     generateErrorTable(errors) {
         const output = document.getElementById("output-table");
         output.innerHTML += this.errorTableMarkup(errors)
+    }
+
+    generateTriploTable(results) {
+        const output = document.getElementById("output-table");
+        output.innerHTML += this.triploTableMarkup(results)
+        //attach evento to the table
+
+        const triploTable = document.getElementById("generated_table_triplo")
+        const btnGenerate = document.getElementById("button-pdf")
+
+        btnGenerate.addEventListener("click", () => {
+            console.log("descargar")
+            console.log(triploTable)
+            downloadTable(triploTable)
+        })
     }
 
     highlightFileDirectory(pagename) {
@@ -177,6 +238,12 @@ class AppCompiler {
 
     _executeStart() {
 
+
+        tippy('.action.save', {
+            content: 'descargar codigo en txt 🤖',
+            animation: "fade"
+        });
+
         if (localStorage.getItem("notShowAgain")) return
 
         const tour = new Shepherd.Tour({
@@ -205,6 +272,23 @@ class AppCompiler {
 
         tour.addStep({
             id: 'example-step',
+            text: 'pulsa el boton de guardar para generar un archivo txt del codigo que estas editando',
+            attachTo: {
+                element: '.action.save',
+                on: 'top'
+            },
+            classes: 'example-step-extra-class',
+            buttons: [
+                {
+                    text: 'Siguiente',
+                    action: tour.next
+                }
+            ]
+        });
+
+
+        tour.addStep({
+            id: 'example-step',
             text: 'Aqui se verá el codigo',
             attachTo: {
                 element: '.editor',
@@ -218,6 +302,7 @@ class AppCompiler {
                 }
             ]
         });
+
 
         tour.addStep({
             id: 'example-step',
@@ -260,6 +345,11 @@ class AppCompiler {
         });
 
         tour.start()
+
+
+        console.log("red")
+
+
     }
 
     _loadLocalData() {
@@ -269,20 +359,25 @@ class AppCompiler {
     }
 
     _localListeners() {
-        const editorTabs  = document.getElementById("tabs-container")
-        const panelFiles  = document.getElementById("panelfiles-container")
-        const codeEditor  = document.getElementById("codeeditor")
-        const buttonNew   = document.getElementById("button__new")
+        const editorTabs = document.getElementById("tabs-container")
+        const panelFiles = document.getElementById("panelfiles-container")
+        const codeEditor = document.getElementById("codeeditor")
+        const buttonNew = document.getElementById("button__new")
         const buttonCheck = document.getElementById("button-checker")
-        const saveButton  = document.getElementById("save-button")
+        const saveButton = document.getElementById("save-button")
 
         onFileTabClick(editorTabs, this.handleFileTabClick.bind(this))
         onFilePanelClick(panelFiles, this.handleFilePanelClick.bind(this))
         onChangeCode(codeEditor, this.handleChangeCode.bind(this))
         onCloseTab(editorTabs, this.handleCloseTab.bind(this), this.injectCode)
-        onClickAnalyzer(buttonCheck, this.handleClickAnalyze.bind(this), this.compiler.tokenTable, this.compiler.semanticAnalisis)
+        onClickAnalyzer(buttonCheck, this.handleClickAnalyze.bind(this), this.compiler.tokenTable, this.compiler.semanticAnalisis, this.compiler.tablaTriplo)
         onAddFile(buttonNew, this.handleAddFile.bind(this))
         onDowloadCode(saveButton, this.handleDownloadCode.bind(this))
+        onHighLightLineErrors(codeEditor, this.handleHighlighLineErrors.bind(this))
+    }
+
+    handleHighlighLineErrors() {
+
     }
 
     handleFileTabClick(pagename) {
@@ -306,9 +401,10 @@ class AppCompiler {
         this.highlightFileDirectory(this.editor.getFile(pagename).name)
     }
 
-    handleClickAnalyze(results, grammar) {
+    handleClickAnalyze(results, grammar, triploTable) {
         this.generateTable(results)
         this.generateErrorTable(grammar)
+        this.generateTriploTable(triploTable)
     }
 
     handleAddFile(filename) {
@@ -319,7 +415,7 @@ class AppCompiler {
         })
     }
 
-    handleDownloadCode()  {
+    handleDownloadCode() {
 
     }
 }

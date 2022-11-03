@@ -10,6 +10,8 @@
     <script src="https://use.fontawesome.com/f1f9921520.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@8.3.1/dist/css/shepherd.css" />
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/animations/scale.css" />
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Lato:ital,wght@0,400;0,700;1,300;1,700&family=Source+Code+Pro:ital,wght@0,400;0,500;0,600;0,700;1,300&display=swap"
         rel="stylesheet">
@@ -59,14 +61,14 @@
                     <div class="action undo">
                         <ion-icon name="reload-outline"></ion-icon>
                     </div>
-                    <div class="action save">
-                        <ion-icon name="save-outline"  id="save-button"></ion-icon>
+                    <div class="action save pointer">
+                        <ion-icon name="save-outline" id="save-button"></ion-icon>
                     </div>
                     <span class="notifier" id="notifier"></span>
 
                 </div>
                 <span class="save button--save" id="button-checker">
-                    Verificar
+                    Verificar 
                     <!-- <span class="loader"></span> -->
                 </span>
             </div>
@@ -86,12 +88,14 @@
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/shepherd.js@8.3.1/dist/js/shepherd.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@8.3.1/dist/css/shepherd.css" />
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/locale/es-mx.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <script src="https://unpkg.com/jspdf@1.4.1/dist/jspdf.min.js"></script>
     <script src="index.js" type="module"></script>
 </body>
 

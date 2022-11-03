@@ -100,14 +100,19 @@ export const onCloseTab = (element, handler, flush) => {
     })
 }
 
-export const onClickAnalyzer = (element, handler, analyzer, semantic) => {
+export const onClickAnalyzer = (element, handler, analyzer, semantic, triplo) => {
     element.addEventListener("click", () => {
         const code = document.getElementById("codeeditor")
+        const cust = document.getElementById("custom-area")
 
         const result = analyzer(code.value)
         const errors = semantic(code.value, result)
+        const tripTb = triplo(code.value)
 
-        handler(result, errors)
+        console.table(tripTb)
+
+
+        handler(result, errors, tripTb)
     })
 }
 
@@ -151,3 +156,10 @@ export const onDowloadCode = (element, handler) => {
         downloadFile(fileUrl, activeTab.dataset.filename)
     })
 }
+
+
+export const onHighLightLineErrors = () => {
+    const codeeditor = document.getElementById("coeeditor");
+    console.log(codeeditor)
+}
+

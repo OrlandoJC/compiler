@@ -7,7 +7,7 @@
 }
 
 body {
-    background-color: #0a0820;
+    background-color: #0f0e27;
     font-family: 'Source Code Pro', monospace;
     color: white;
 }
@@ -15,7 +15,7 @@ body {
 main {
     display: grid;
     /* grid-template-columns: 280px 2fr 2fr; */
-    grid-template-columns: 280px minmax(50%, 3fr) 2fr;
+    grid-template-columns: 280px minmax(20%, 2fr) 2fr;
     grid-template-rows: 100vh;
 }
 
@@ -150,6 +150,37 @@ ion-icon {
     left: 0;
 }
 
+
+
+
+.panel__output::-webkit-scrollbar {
+    width: .6em;
+    height: 2px;
+}
+
+.panel__output::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.panel__output::-webkit-scrollbar-thumb {
+    background-color: #151434;
+    outline: 1px solid #131036;
+    border-radius: 15px;
+}
+
+
+.panel__output--active::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: #4731c5b9;
+    bottom: 0;
+    left: 0;
+}
+
+
+
 .file ion-icon {
     font-size: .9rem;
 }
@@ -166,6 +197,8 @@ ion-icon {
     color: white;
     padding: 10px 10px;
     position: relative;
+    font-weight: 500;
+
 
 }
 
@@ -218,6 +251,8 @@ ion-icon {
     align-items: center;
 }
 
+
+
 .button--save {
     padding: 10px 20px;
     border-radius: 10px;
@@ -262,7 +297,6 @@ ion-icon {
 
 .result {
     width: 100%;
-    margin-top: 10%;
 }
 
 table.GeneratedTable {
@@ -281,8 +315,8 @@ table.GeneratedTable {
 
 table.GeneratedTable td,
 table.GeneratedTable th {
-    border-width: 0px;
-    border-color: #ffffff;
+    border-width: .2px;
+    border-color: #ffffff1b;
     border-style: solid;
     padding: 4px;
 }
@@ -294,6 +328,40 @@ table.GeneratedTable thead {
 table.GeneratedTable tr:nth-child(2n) {
     background-color: rgb(31 29 67);
     ;
+}
+
+
+.simbol-table {
+    background-color: rgb(72 7 200);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.error-table {
+    background-color: rgb(200 7 62);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.triplo-table {
+    background-color: rgb(144 7 200);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.button-pdf {
+    margin-top: 10px;
+    display: inline-block;
+    border: 1px solid rgba(255, 255, 255, 0.243);
+    padding: 10px;
+    border-radius: 20px;
+    text-align: start;
+    font-size: .8em;
+
+}
+
+.button-pdf:hover {
+    cursor: pointer;
 }
 
 /*animation*/
@@ -318,8 +386,6 @@ table.GeneratedTable tr:nth-child(2n) {
         transform: rotate(360deg);
     }
 }
-
-
 
 .backdrop,
 .codeeditor {
@@ -360,4 +426,22 @@ table.GeneratedTable tr:nth-child(2n) {
     white-space: pre-wrap;
     word-wrap: break-word;
 
+}
+
+
+/**utilies*/
+
+.pointer {
+    cursor: pointer;
+}
+
+
+.icon {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.text {
+    display: inline-block;
+    vertical-align: middle;
 }

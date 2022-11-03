@@ -6,7 +6,11 @@ import rules from "./config/rules.matchers.js";
 import CompilerError from "./CompilerError.js";
 
 const ASIGNATION_REGEX = /\#[a-z]+\$\s=\s(-?[0-9]*22.[0-9]+|(-)?[0-9]*22|\#[a-z]+\$)(\s(\+|\-|\*|\/)\s(-?[0-9]*22.[0-9]+|(-)?[0-9]*22|\#[a-z]+\$))?/;
-const OPERATION_REGEX  = /\#[a-z]+\$\s=\s(-?[0-9]*22.[0-9]+|(-)?[0-9]*22|\#[a-z]+\$)(\s(\+|\*|\-|\/)\s(-?[0-9]*22.[0-9]+|(-)?[0-9]*22|\#[a-z]+\$))?/g;
+const OPERATION_REGEX = /\#[a-z]+\$\s=\s(-?[0-9]*22.[0-9]+|(-)?[0-9]*22|\#[a-z]+\$)(\s(\+|\*|\-|\/)\s(-?[0-9]*22.[0-9]+|(-)?[0-9]*22|\#[a-z]+\$))?/g;
+
+const ASIGNATION_NORULE_REGEX = /(\#[a-z]+\$|[a-zA-Z0-9\#\$])*\s=\s(-?[0-9]*22.[0-9]+|(-)?[0-9]*22|(\#[a-z]+\$|[a-zA-Z0-9\#\$])*)(\s(\+|\-|\*|\/)\s(-?[0-9]*22.[0-9]+|(-)?[0-9]*22|(\#[a-z]+\$|[a-zA-Z0-9\#\$])*))?/
+const RELATIONAL_REGEX = /(\#[a-z]+\$|[a-zA-Z0-9\#\$])*\s(==|<=|<|>|!=|>=|==|!=)\s(\#[a-z]+\$|[a-zA-Z0-9\#\$]*)/g
+const LOGICAL_REGEX = /(\#[a-z]+\$|[a-zA-Z0-9\#\$])*\s(==|<=|<|>|!=|>=|==|!=)\s(\#[a-z]+\$|[a-zA-Z0-9\#\$]*)\s(\|\||\&\&)\s(\#[a-z]+\$|[a-zA-Z0-9\#\$])*\s(==|<=|<|>|!=|>=|==|!=)\s(\#[a-z]+\$|[a-zA-Z0-9\#\$]*)/g
 
 class Compiler {
 
@@ -81,11 +85,11 @@ class Compiler {
                     // si no existe un operador, entonces es una asignacion
                     if (!opa) {
                         // extrae los tipos de datos de los operandos
-                        const toType  = table.find(token => token.token === to)?.type
+                        const toType = table.find(token => token.token === to)?.type
                         const fOpType = table.find(token => token.token === fOp)?.type
 
                         // si el tipo de dato no se encuentra en la tabla de simbolos, significa que la variable no fue declarada
-                        if (!toType)  { errors.push(new CompilerError(VAR_ERROR, "variable indefinida", lineNumber, to)) ; continue }
+                        if (!toType) { errors.push(new CompilerError(VAR_ERROR, "variable indefinida", lineNumber, to)); continue }
                         if (!fOpType) { errors.push(new CompilerError(VAR_ERROR, "variable indefinida", lineNumber, fOp)); continue }
 
                         // si la regla de operacion no se encuentra, salta la operacion
@@ -93,18 +97,18 @@ class Compiler {
 
                         //verifica que el operando asignado sea del tipo de tipo correcto
                         if (!rules[toType].asignation.operands.includes(fOpType)) {
-                            errors.push(new CompilerError(TYPE_ERROR, "incompatibilidad de tipos", lineNumber, fOp))
+                            errors.push(new CompilerError(TYPE_ERROR, "incompatibilidad de tipos", lineNumber, fOp, toType))
                         }
                     } else { // se trata de una operacion
                         // extrae los tipos de datos de los operandos
-                        const toType  = table.find(token => token.token === to)?.type
+                        const toType = table.find(token => token.token === to)?.type
                         const fOpType = table.find(token => token.token === fOp)?.type
                         const sOpType = table.find(token => token.token === sOp)?.type
 
                         // si el tipo de dato no se encuentra en la tabla de simbolos, significa que la variable no fue declarada
-                        if (!toType)  { errors.push(new CompilerError(VAR_ERROR, "variable indefinida", lineNumber, to)) ; continue} 
-                        if (!fOpType) { errors.push(new CompilerError(VAR_ERROR, "variable indefinida", lineNumber, fOp)); continue}
-                        if (!sOpType) { errors.push(new CompilerError(VAR_ERROR, "variable indefinida", lineNumber, sOp)); continue}
+                        if (!toType) { errors.push(new CompilerError(VAR_ERROR, "variable indefinida", lineNumber, to)); continue }
+                        if (!fOpType) { errors.push(new CompilerError(VAR_ERROR, "variable indefinida", lineNumber, fOp)); continue }
+                        if (!sOpType) { errors.push(new CompilerError(VAR_ERROR, "variable indefinida", lineNumber, sOp)); continue }
 
                         // si la regla de operacion no se encuentra, salta la operacion
                         if (!rules[toType]) continue
@@ -114,11 +118,11 @@ class Compiler {
                             //comprueba que exista la operacion del tipo de dato actual  para el operando  : a = b opa c* 
                             if (!rules[toType].operation[fOpType].next.includes(sOpType)) {
                                 // si no existe, lanza un error de tipo c : error
-                                errors.push(new CompilerError(TYPE_ERROR, "incompatibilidad de tipos", lineNumber, sOp))
+                                errors.push(new CompilerError(TYPE_ERROR, "incompatibilidad de tipos", lineNumber, sOp, toType))
                             }
                         } else {
                             //si no existe, lanza un error de tipo b error
-                            errors.push(new CompilerError(TYPE_ERROR, "incompatibilidad de tipos", lineNumber, fOp))
+                            errors.push(new CompilerError(TYPE_ERROR, "incompatibilidad de tipos", lineNumber, fOp, toType))
                         }
                     }
                 }
@@ -128,6 +132,93 @@ class Compiler {
         return errors
     }
 
+
+    tablaTriplo(string) {
+        let lines = cleanSpaces(string.split("\n"))
+        let triploTable = []
+        let isInsideIf = false
+        let isInsideElse = false
+        let lineCounter = 1
+
+        for (let line of lines) {
+            if (isValid(ASIGNATION_NORULE_REGEX, line)) {
+                let tokens = cleanSpaces(line.split(" "))
+
+                for (let i = 1; i < tokens.length; i++) {
+                    if (["=", "-", "/", "+", "*"].includes(tokens[i])) {
+                        triploTable.push({
+                            pos: lineCounter++,
+                            dato_obj: "T1",
+                            dato_fuente: tokens[i + 1],
+                            operador: tokens[i]
+                        })
+                    }
+                }
+
+                triploTable.push({ pos: lineCounter++, dato_obj: tokens[0], dato_fuente: "T1", operador: "=" })
+            }
+
+            if (line.startsWith("if22")) {
+                const isLogicalAndRelational = line.match(LOGICAL_REGEX)
+                const isRelational = line.match(RELATIONAL_REGEX)
+
+                isInsideIf = true
+
+                if (isLogicalAndRelational) {
+                    const logicalMatches = getMatches(RELATIONAL_REGEX, line).map(match => match[0])
+                    let [firstMatch, secondMatch] = logicalMatches
+
+                    if (line.includes("||")) {
+                        triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[0], operador: "=" })
+                        triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[2], operador: firstMatch.split(" ")[1] })
+                        triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "TRUE", operador: lineCounter + 6 })
+                        triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "FALSE", operador: lineCounter + 1 })
+
+                        triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: secondMatch.split(" ")[0], operador: "=" })
+                        triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: secondMatch.split(" ")[2], operador: secondMatch.split(" ")[1] })
+                        triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "TRUE", operador: lineCounter + 2 })
+                        triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "FALSE", operador: " " })
+                    }
+
+                    if (line.includes("&&")) {
+                        triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[0], operador: "=" })
+                        triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[2], operador: firstMatch.split(" ")[1] })
+                        triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "TRUE", operador: lineCounter + 1 })
+                        triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "FALSE", operador: " " })
+
+                        triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: secondMatch.split(" ")[0], operador: "=" })
+                        triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: secondMatch.split(" ")[2], operador: secondMatch.split(" ")[1] })
+                        triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "TRUE", operador: lineCounter + 1 })
+                        triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "FALSE", operador: " " })
+                    }
+                }
+
+                if (isRelational) {
+
+                }
+            }
+
+            if (line.includes("else22") && isInsideIf) {
+                isInsideIf = false
+                isInsideElse = true;
+
+                triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: " ", operador: "JMP" })
+
+                for (let triplo of triploTable) {
+                    if (triplo.operador == " ") {
+                        triplo.operador = lineCounter
+                    }
+                }
+            }
+
+            if (line == "}" && isInsideElse) {
+                isInsideElse = false
+            }
+
+        }
+
+        return triploTable
+    }
 }
 
 export default Compiler
