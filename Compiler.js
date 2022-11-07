@@ -178,6 +178,7 @@ class Compiler {
                     const logicalMatches = getMatches(RELATIONAL_REGEX, line).map(match => match[0])
                     let [firstMatch, secondMatch] = logicalMatches //exrae ambos operandos
 
+                    //verifica que sea un operador OR
                     if (line.includes(CONSTANT_OPERATOR_OR)) {
                         triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[0], operador: "=" })
                         triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[2], operador: firstMatch.split(" ")[1] })
