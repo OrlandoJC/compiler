@@ -198,8 +198,6 @@ ion-icon {
     padding: 10px 10px;
     position: relative;
     font-weight: 500;
-
-
 }
 
 
@@ -217,29 +215,32 @@ ion-icon {
     /*remove the resize handle on the bottom right*/
     font-family: 'Source Code Pro', monospace;
     overflow-y: hidden;
+
 }
 
 /*editor*/
 
 .line-numbers {
-    width: 20px;
     text-align: right;
+    display: inline-block;
+    margin-right: 10px;
 }
 
-.line-numbers span {
+.line-numbers p {
     counter-increment: linenumber;
 }
 
-.line-numbers span::before {
+.line-numbers p::before {
     content: counter(linenumber);
-    display: block;
+    display: inline-block;
     color: #506882;
+    width : 19px;
+    font-size: 1em;
 }
 
 .selected {
     color: white;
     background-color: #14122d;
-
 }
 
 .actions {
@@ -408,8 +409,9 @@ table.GeneratedTable tr:nth-child(2n) {
     resize: none;
     padding: 0;
     margin: 0;
-    line-height: 1.4;
+    margin-left: 10px;
     border: 1px solid transparent;
+
 }
 
 .backdrop {
@@ -418,8 +420,7 @@ table.GeneratedTable tr:nth-child(2n) {
     border: 1px solid transparent;
     overflow: auto;
     pointer-events: none;
-    line-height: 1.4;
-
+    margin-left: 38px;
 }
 
 .custom-area {

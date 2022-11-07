@@ -5,14 +5,14 @@ class Editor {
                 {
                     name: "sample.eq2",
                     date: new Date(),
-                    content: "Ment# #numero$ , #aux$ , #res$ ;\nGcad# #nombre$ ;\n\n#numero$ = #aux$ + #res$ ;\n\nif22 ( #numero$ > 12322 ) {\n  #numero$ = #aux$ / #random$ ;\n} else22 {\n  #numero$ = #aux$ * #hl$ ;\n}\n\n\n\n\n",
+                    content: "Ment# #numero$ , #aux$ , #res$ ;\nGcad# #nombre$ ;\n\n#numero$ = #aux$ + #res$ ;\n\nif22 ( #numero$ > 12322 ) {\n  #numero$ = #aux$ / #random$ ;\n} else22 {\n  #numero$ = #aux$ * #hl$ ;\n}",
                 }
             ],
             pages: [
                 {
                     name: "sample.eq2",
                     date: new Date(),
-                    content: "Ment# #numero$ , #aux$ , #res$ ;\nGcad# #nombre$ ;\n\n#numero$ = #aux$ + #res$ ;\n\nif22 ( #numero$ > 12322 ) {\n  #numero$ = #aux$ / #random$ ;\n} else22 {\n  #numero$ = #aux$ * #h$ ;\n}\n\n\n\n\n",
+                    content: "Ment# #numero$ , #aux$ , #res$ ;\nGcad# #nombre$ ;\n\n#numero$ = #aux$ + #res$ ;\n\nif22 ( #numero$ > 12322 ) {\n  #numero$ = #aux$ / #random$ ;\n} else22 {\n  #numero$ = #aux$ * #h$ ;\n}",
                 },
                 {
                     name: "sample_empty.eq2",

@@ -23,13 +23,13 @@
         <div class="panel panel__directory">
             <div>
                 <span class="title">Compilador 🔎 </span>
-                <span class="button--new" id="button__new">Añadir <ion-icon name="add-outline"></ion-icon></span>
+                <!-- <span class="button--new" id="button__new">Añadir <ion-icon name="add-outline"></ion-icon></span> -->
                 <div class="files" id="panelfiles-container">
                     <div class="file" data-filename="sample.eq2">
                         <ion-icon name="document-outline"></ion-icon>
                         <p>Ejemplo1</p>
                         <span class="subtitle">sample.eq1</span>
-
+                        
                     </div>
                     <div class="file" data-filename="sample_empty.eq2">
                         <ion-icon name="document-outline"></ion-icon>
@@ -53,6 +53,9 @@
                     <div class="custom-area" id="custom-area">
                         <!-- Cloned text with colors will go here -->
                     </div>
+                </div>
+                <div class="line-numbers">
+                    <span></span>
                 </div>
                 <textarea disabled spellcheck="false" name="code" id="codeeditor" class="editor codeeditor"></textarea>
             </div>

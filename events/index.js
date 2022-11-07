@@ -4,9 +4,12 @@ import { timerMessage } from "../utils/timers.js";
 
 export const onFileTabClick = function (element, handle) {
     element.addEventListener("click", (event) => {
-        const target    = event.target;
-        const tabOpen   = target.closest('.breadcumb')
-        const activeTab = document.querySelector(".breadcumb--active")
+        const target      = event.target;
+        const tabOpen     = target.closest('.breadcumb')
+        const activeTab   = document.querySelector(".breadcumb--active")
+        const codeEditor  = document.getElementById("codeeditor")
+        const lineNumbers = document.querySelector('.line-numbers')
+
 
         if (target.nodeName == "ION-ICON") return
         if (!tabOpen) return
@@ -16,28 +19,41 @@ export const onFileTabClick = function (element, handle) {
         if (tabOpen) {
             tabOpen.classList.add("breadcumb--active")
             handle(tabOpen.dataset.filename)
+            const numberOfLines = codeEditor.value.split('\n').length
+            lineNumbers.innerHTML = Array(numberOfLines)
+                .fill('<p></p>')
+                .join('')
         }
     })
 }
 
 export const onFilePanelClick = function (element, handle) {
     const codeEditor = document.getElementById("codeeditor")
+    const lineNumbers = document.querySelector('.line-numbers')
 
     element.addEventListener("click", (event) => {
         const target = event.target;
         let file = target.closest(".file")
 
         if (file) {
+            
             codeEditor.disabled = false;
             handle(file.dataset.filename)
+            //add line numbers
+            const numberOfLines = codeEditor.value.split('\n').length
+            lineNumbers.innerHTML = Array(numberOfLines)
+                .fill('<p></p>')
+                .join('')
         }
     })
 }
 
 export const onChangeCode = function (element, handle) {
     const notifier = document.getElementById("notifier")
+    const lineNumbers = document.querySelector('.line-numbers')
     let customArea = document.querySelector(".custom-area");
     let backdrop   = document.querySelector(".backdrop");
+
 
     function debounce(func, timeout = 300) {
         let timer;
@@ -47,7 +63,7 @@ export const onChangeCode = function (element, handle) {
         };
     }
 
-    element.addEventListener("keyup", debounce(() => {
+    element.addEventListener("keydown", debounce(() => {
         const activeTab  = document.querySelector(".breadcumb--active")
         const codeEditor = document.getElementById("codeeditor")
 
@@ -58,7 +74,15 @@ export const onChangeCode = function (element, handle) {
         handle(filename, codeEditor.value)
 
         timerMessage(notifier, "cambios guardados ✅", 500)
-    }, 500))
+    }, 1000))
+
+    element.addEventListener("keyup", (event) => {       
+        const numberOfLines = event.target.value.split('\n').length
+
+        lineNumbers.innerHTML = Array(numberOfLines)
+          .fill('<p></p>')
+          .join('')
+    })
 
 
     element.addEventListener("input", function () {
@@ -73,6 +97,8 @@ export const onChangeCode = function (element, handle) {
 export const onCloseTab = (element, handler, flush) => {
     element.addEventListener("click", (e) => {
         const target = e.target;
+        const lineNumbers = document.querySelector('.line-numbers')
+        const codeEditor = document.getElementById("codeeditor")
 
         if (target.nodeName == "ION-ICON" && target.classList.contains("delete")) {
             const tabSelected = target.closest(".breadcumb")
@@ -85,6 +111,10 @@ export const onCloseTab = (element, handler, flush) => {
                 if (openTabs.length >= 1) {
                     openTabs[openTabs.length - 1].classList.add("breadcumb--active")
                     handler(openTabs[openTabs.length - 1].dataset.filename)
+                    const numberOfLines = codeEditor.value.split('\n').length
+                    lineNumbers.innerHTML = Array(numberOfLines)
+                        .fill('<p></p>')
+                        .join('')
                 }
             } else {
                 element.removeChild(tabSelected)
@@ -94,6 +124,8 @@ export const onCloseTab = (element, handler, flush) => {
 
             if (openTabs.length === 0) {
                 document.getElementById("codeeditor").disabled = true;
+                document.getElementById("codeeditor").value = "";     
+                lineNumbers.innerHTML = ""           
                 flush("")
             }
         }
@@ -125,22 +157,22 @@ export const onAddFile = (element, handler) => {
         easing: "cubic-bezier(1, 0, 0, 1)"
     })
 
-    element.addEventListener("click", () => {
-        let filename = prompt("Ingresa el nombre del archivo");
+    // element.addEventListener("click", () => {
+    //     let filename = prompt("Ingresa el nombre del archivo");
 
-        if (filename != null) {
-            handler(filename)
-            editor.disabled = false;
-            setTimeout(() => {
-                const tabsContainer = document.getElementById("tabs-container")
-                tabsContainer.scrollTo({
-                    left: tabsContainer.scrollWidth,
-                    top: 0,
-                    behavior: 'smooth'
-                })
-            }, 0)
-        }
-    })
+    //     if (filename != null) {
+    //         handler(filename)
+    //         editor.disabled = false;
+    //         setTimeout(() => {
+    //             const tabsContainer = document.getElementById("tabs-container")
+    //             tabsContainer.scrollTo({
+    //                 left: tabsContainer.scrollWidth,
+    //                 top: 0,
+    //                 behavior: 'smooth'
+    //             })
+    //         }, 0)
+    //     }
+    // })
 
 }
 

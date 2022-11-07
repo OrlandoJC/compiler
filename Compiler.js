@@ -7,10 +7,15 @@ import CompilerError from "./CompilerError.js";
 
 const ASIGNATION_REGEX = /\#[a-z]+\$\s=\s(-?[0-9]*22.[0-9]+|(-)?[0-9]*22|\#[a-z]+\$)(\s(\+|\-|\*|\/)\s(-?[0-9]*22.[0-9]+|(-)?[0-9]*22|\#[a-z]+\$))?/;
 const OPERATION_REGEX = /\#[a-z]+\$\s=\s(-?[0-9]*22.[0-9]+|(-)?[0-9]*22|\#[a-z]+\$)(\s(\+|\*|\-|\/)\s(-?[0-9]*22.[0-9]+|(-)?[0-9]*22|\#[a-z]+\$))?/g;
-
 const ASIGNATION_NORULE_REGEX = /(\#[a-z]+\$|[a-zA-Z0-9\#\$])*\s=\s(-?[0-9]*22.[0-9]+|(-)?[0-9]*22|(\#[a-z]+\$|[a-zA-Z0-9\#\$])*)(\s(\+|\-|\*|\/)\s(-?[0-9]*22.[0-9]+|(-)?[0-9]*22|(\#[a-z]+\$|[a-zA-Z0-9\#\$])*))?/
 const RELATIONAL_REGEX = /(\#[a-z]+\$|[a-zA-Z0-9\#\$])*\s(==|<=|<|>|!=|>=|==|!=)\s(\#[a-z]+\$|[a-zA-Z0-9\#\$]*)/g
 const LOGICAL_REGEX = /(\#[a-z]+\$|[a-zA-Z0-9\#\$])*\s(==|<=|<|>|!=|>=|==|!=)\s(\#[a-z]+\$|[a-zA-Z0-9\#\$]*)\s(\|\||\&\&)\s(\#[a-z]+\$|[a-zA-Z0-9\#\$])*\s(==|<=|<|>|!=|>=|==|!=)\s(\#[a-z]+\$|[a-zA-Z0-9\#\$]*)/g
+
+const CONSTANT_KEYWORD_IF = "if22"
+const CONSTANT_KEYWORD_ELSE = "else22"
+const CONSTANT_OPERATOR_AND = "&&"
+const CONSTANT_OPERATOR_OR = "||"
+const CONSTANT_CHARACTER_RIGHT_BRACKET = "}"
 
 class Compiler {
 
@@ -146,19 +151,14 @@ class Compiler {
 
                 for (let i = 1; i < tokens.length; i++) {
                     if (["=", "-", "/", "+", "*"].includes(tokens[i])) {
-                        triploTable.push({
-                            pos: lineCounter++,
-                            dato_obj: "T1",
-                            dato_fuente: tokens[i + 1],
-                            operador: tokens[i]
-                        })
+                        triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: tokens[i + 1], operador: tokens[i] })
                     }
                 }
 
                 triploTable.push({ pos: lineCounter++, dato_obj: tokens[0], dato_fuente: "T1", operador: "=" })
             }
 
-            if (line.startsWith("if22")) {
+            if (line.startsWith(CONSTANT_KEYWORD_IF)) {
                 const isLogicalAndRelational = line.match(LOGICAL_REGEX)
                 const isRelational = line.match(RELATIONAL_REGEX)
 
@@ -168,7 +168,7 @@ class Compiler {
                     const logicalMatches = getMatches(RELATIONAL_REGEX, line).map(match => match[0])
                     let [firstMatch, secondMatch] = logicalMatches
 
-                    if (line.includes("||")) {
+                    if (line.includes(CONSTANT_OPERATOR_OR)) {
                         triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[0], operador: "=" })
                         triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[2], operador: firstMatch.split(" ")[1] })
                         triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "TRUE", operador: lineCounter + 5 })
@@ -180,7 +180,7 @@ class Compiler {
                         triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "FALSE", operador: " " })
                     }
 
-                    if (line.includes("&&")) {
+                    if (line.includes(CONSTANT_OPERATOR_AND)) {
                         triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[0], operador: "=" })
                         triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[2], operador: firstMatch.split(" ")[1] })
                         triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "TRUE", operador: lineCounter + 1 })
@@ -194,15 +194,21 @@ class Compiler {
                 }
 
                 if (isRelational) {
-
+                    const relacionalMatches = getMatches(RELATIONAL_REGEX, line).map(match => match[0])
+                    let [firstMatch] = relacionalMatches
+                    
+                    triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[0], operador: "="})
+                    triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[2], operador: firstMatch.split(" ")[1] })
+                    triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "TRUE", operador: lineCounter + 1 })
+                    triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "FALSE", operador: " " })
                 }
             }
 
-            if (line.includes("else22") && isInsideIf) {
+            if (line.includes(CONSTANT_KEYWORD_ELSE) && isInsideIf) {
                 isInsideIf = false
                 isInsideElse = true;
 
-                triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: " ", operador: "JMP" })
+                triploTable.push({ pos: lineCounter++, dato_obj: "", dato_fuente: " ", operador: "JMP" })
 
                 for (let triplo of triploTable) {
                     if (triplo.operador == " ") {
@@ -211,10 +217,17 @@ class Compiler {
                 }
             }
 
-            if (line == "}" && isInsideElse) {
+            if (line == CONSTANT_CHARACTER_RIGHT_BRACKET  && isInsideElse) {
                 isInsideElse = false
-            }
 
+                for (let triplo of triploTable) {
+
+                    console.log(triplo.dato_fuente == "*")
+                    if (triplo.dato_fuente === " ") {
+                        triplo.dato_fuente = triploTable[triploTable.length - 1].pos  + 1
+                    }       
+                }
+            }
         }
 
         return triploTable
