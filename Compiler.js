@@ -241,6 +241,15 @@ class Compiler {
                     }       
                 }
             }
+
+            if (line == CONSTANT_CHARACTER_RIGHT_BRACKET  && isInsideIf) {
+                isInsideElse = false
+                for (let triplo of triploTable) {
+                    if (triplo.operador == " ") {
+                        triplo.operador = lineCounter
+                    }
+                }
+            }
         }
 
         return triploTable
