@@ -94,7 +94,7 @@ class Compiler {
                         const fOpType = table.find(token => token.token === fOp)?.type
 
                         // si el tipo de dato no se encuentra en la tabla de simbolos, significa que la variable no fue declarada
-                        if (!toType) { errors.push(new CompilerError(VAR_ERROR, "variable indefinida", lineNumber, to)); continue }
+                        if (!toType)  { errors.push(new CompilerError(VAR_ERROR, "variable indefinida", lineNumber, to)); continue }
                         if (!fOpType) { errors.push(new CompilerError(VAR_ERROR, "variable indefinida", lineNumber, fOp)); continue }
 
                         // si la regla de operacion no se encuentra, salta la operacion
@@ -106,12 +106,12 @@ class Compiler {
                         }
                     } else { // se trata de una operacion
                         // extrae los tipos de datos de los operandos
-                        const toType = table.find(token => token.token === to)?.type
+                        const toType  = table.find(token => token.token === to)?.type
                         const fOpType = table.find(token => token.token === fOp)?.type
                         const sOpType = table.find(token => token.token === sOp)?.type
 
                         // si el tipo de dato no se encuentra en la tabla de simbolos, significa que la variable no fue declarada
-                        if (!toType) { errors.push(new CompilerError(VAR_ERROR, "variable indefinida", lineNumber, to)); continue }
+                        if (!toType)  { errors.push(new CompilerError(VAR_ERROR, "variable indefinida", lineNumber, to)); continue }
                         if (!fOpType) { errors.push(new CompilerError(VAR_ERROR, "variable indefinida", lineNumber, fOp)); continue }
                         if (!sOpType) { errors.push(new CompilerError(VAR_ERROR, "variable indefinida", lineNumber, sOp)); continue }
 
@@ -137,36 +137,46 @@ class Compiler {
         return errors
     }
 
-
+    
     tablaTriplo(string) {
-        let lines = cleanSpaces(string.split("\n"))
-        let triploTable = []
-        let isInsideIf = false
+        let isInsideIf   = false
         let isInsideElse = false
-        let lineCounter = 1
+        let lineCounter  = 1
+        let triploTable  = []
+        
+        let lines = cleanSpaces(string.split("\n"))
 
+        //recorre cada linea del editor de codigo
         for (let line of lines) {
+            //comprueba que la linea tenga una asignacion valida
             if (isValid(ASIGNATION_NORULE_REGEX, line)) {
+                //separa los elementos de la linea con base en los espacios
                 let tokens = cleanSpaces(line.split(" "))
-
+                
+                // recorre cada par de elementos sobrantes de la asignacion omitiendo el primero(que sera la asignacion final)
                 for (let i = 1; i < tokens.length; i++) {
+                    //verifica que el operador utilizado sea valido
                     if (["=", "-", "/", "+", "*"].includes(tokens[i])) {
+                        //añade la linea del triplo a la tabla
                         triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: tokens[i + 1], operador: tokens[i] })
                     }
                 }
-
+                //añade la ultima linea(asignacion)
                 triploTable.push({ pos: lineCounter++, dato_obj: tokens[0], dato_fuente: "T1", operador: "=" })
             }
 
+            //verifica que la linea inicie con la palabra clave de la condicional "if22"
             if (line.startsWith(CONSTANT_KEYWORD_IF)) {
+                //verifica los dos casos, logico o solo relacional
                 const isLogicalAndRelational = line.match(LOGICAL_REGEX)
-                const isRelational = line.match(RELATIONAL_REGEX)
+                const isRelational       = line.match(RELATIONAL_REGEX)
 
-                isInsideIf = true
+                isInsideIf = true // establece que se el codigo se encuentra actualmente dentro de un if
 
+                //verifica si la expression es logica y cuenta con dos operandos
                 if (isLogicalAndRelational) {
                     const logicalMatches = getMatches(RELATIONAL_REGEX, line).map(match => match[0])
-                    let [firstMatch, secondMatch] = logicalMatches
+                    let [firstMatch, secondMatch] = logicalMatches //exrae ambos operandos
 
                     if (line.includes(CONSTANT_OPERATOR_OR)) {
                         triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[0], operador: "=" })
@@ -191,17 +201,19 @@ class Compiler {
                         triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "TRUE", operador: lineCounter + 1 })
                         triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "FALSE", operador: " " })
                     }
+                } else {
+                    if (isRelational) {
+                        const relacionalMatches = getMatches(RELATIONAL_REGEX, line).map(match => match[0])
+                        let [firstMatch] = relacionalMatches
+                        
+                        triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[0], operador: "="})
+                        triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[2], operador: firstMatch.split(" ")[1] })
+                        triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "TRUE", operador: lineCounter + 1 })
+                        triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "FALSE", operador: " " })
+                    }
                 }
 
-                if (isRelational) {
-                    const relacionalMatches = getMatches(RELATIONAL_REGEX, line).map(match => match[0])
-                    let [firstMatch] = relacionalMatches
-                    
-                    triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[0], operador: "="})
-                    triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: firstMatch.split(" ")[2], operador: firstMatch.split(" ")[1] })
-                    triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "TRUE", operador: lineCounter + 1 })
-                    triploTable.push({ pos: lineCounter++, dato_obj: "TR1", dato_fuente: "FALSE", operador: " " })
-                }
+               
             }
 
             if (line.includes(CONSTANT_KEYWORD_ELSE) && isInsideIf) {
