@@ -100,10 +100,15 @@ class AppCompiler {
 
 
     //  {pos: 1, dato_obj: 'T1', dato_fuente: '#aux$', operador: '='}
-    triploTableMarkup(results) {
-        return `${results.length > 0 ? `<br>  <h4 class="triplo-table">Tabla de Triplos <i class="fa fa-list-ol" aria-hidden="true"></i></h4> <br>  
+    triploTableMarkup(results, title = "") {
+        return `${results.length > 0 ? `<br>  
+            <h4 class="triplo-table">
+                tabla de triplo ${title} <i class="fa fa-list-ol" aria-hidden="true"></i>
+            </h4> <br>  
             <div>
-            <div id="generated_table_triplo"><table class="GeneratedTable">
+            <div id="${title == "" 
+                    ? "generated_table_triplo"
+                    : "generated_optimized_triplo"}"><table class="GeneratedTable">
                 <thead>
                     <tr>
                         <th></th>
@@ -125,7 +130,7 @@ class AppCompiler {
                 </tbody>
             </table>
             <div>
-                <span class="button-pdf" id=button-pdf>
+                <span class="button-pdf" id=button-pdf${title}>
                 <ion-icon class="icon" name="download-outline"></ion-icon>
                     <span class="text">exportar como pdf</span>
                 </ion-item>
@@ -133,7 +138,16 @@ class AppCompiler {
             </div>` : ""}`
     }
 
-
+    generateButtonMarkup() {
+        return `
+            <div class="button_container">
+                <span class="button-pdf button-action" id=button-assembly>
+                <ion-icon class="icon" name="download-outline"></ion-icon>
+                    <span class="text">descargar codigo ensamblador</span>
+                </ion-item>
+            </div> 
+        `
+    }
 
     loadFiles() {
         const panelFiles = document.getElementById("panelfiles-container")
@@ -147,23 +161,20 @@ class AppCompiler {
         output.innerHTML = this.tableMarkup(results)
     }
 
-
     generateErrorTable(errors) {
         const output = document.getElementById("output-table");
         output.innerHTML += this.errorTableMarkup(errors)
     }
 
-    generateTriploTable(results) {
+    generateTriploTable(results, title) {
         const output = document.getElementById("output-table");
-        output.innerHTML += this.triploTableMarkup(results)
+        output.innerHTML += this.triploTableMarkup(results, title)
         //attach evento to the table
+    }
 
-        const triploTable = document.getElementById("generated_table_triplo")
-        const btnGenerate = document.getElementById("button-pdf")
-
-        btnGenerate.addEventListener("click", () => {
-            downloadTable(triploTable)
-        })
+    generateButton() {
+        const output = document.getElementById("output-table");
+        output.innerHTML += this.generateButtonMarkup()
     }
 
     highlightFileDirectory(pagename) {
@@ -235,8 +246,6 @@ class AppCompiler {
     }
 
     _executeStart() {
-
-
         tippy('.action.save', {
             content: 'descargar codigo en txt 🤖',
             animation: "fade"
@@ -367,8 +376,8 @@ class AppCompiler {
         onFileTabClick(editorTabs, this.handleFileTabClick.bind(this))
         onFilePanelClick(panelFiles, this.handleFilePanelClick.bind(this))
         onChangeCode(codeEditor, this.handleChangeCode.bind(this))
-        onCloseTab(editorTabs, this.handleCloseTab.bind(this), this.injectCode)
-        onClickAnalyzer(buttonCheck, this.handleClickAnalyze.bind(this), this.compiler.tokenTable, this.compiler.semanticAnalisis, this.compiler.tablaTriplo)
+        onCloseTab(editorTabs, this.handleCloseTab.bind(this), this.injectCode),
+        onClickAnalyzer(buttonCheck, this.handleClickAnalyze.bind(this), this.compiler.tokenTable, this.compiler.semanticAnalisis, this.compiler.tablaTriplo, this.compiler.optimize, this.compiler.generateAssembly)
         onAddFile(buttonNew, this.handleAddFile.bind(this))
         onDowloadCode(saveButton, this.handleDownloadCode.bind(this))
         onHighLightLineErrors(codeEditor, this.handleHighlighLineErrors.bind(this))
@@ -399,10 +408,12 @@ class AppCompiler {
         this.highlightFileDirectory(this.editor.getFile(pagename).name)
     }
 
-    handleClickAnalyze(results, grammar, triploTable) {
+    handleClickAnalyze(results, grammar, triploTable, optimizedTriplo) {
         this.generateTable(results)
         this.generateErrorTable(grammar)
-        this.generateTriploTable(triploTable)
+        this.generateTriploTable(triploTable, "")
+        this.generateTriploTable(optimizedTriplo, "optimizado")
+        this.generateButton()
     }
 
     handleAddFile(filename) {

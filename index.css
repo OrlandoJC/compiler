@@ -253,6 +253,14 @@ ion-icon {
 }
 
 
+.button-action {
+    border-radius: 20px !important;
+    background-color: rgb(11, 99, 162);
+}
+
+.button_container {
+    margin-top: 30px;
+}
 
 .button--save {
     padding: 10px 20px;
@@ -355,10 +363,9 @@ table.GeneratedTable tr:nth-child(2n) {
     display: inline-block;
     border: 1px solid rgba(255, 255, 255, 0.243);
     padding: 10px;
-    border-radius: 20px;
+    border-radius: 10px;
     text-align: start;
     font-size: .8em;
-
 }
 
 .button-pdf:hover {

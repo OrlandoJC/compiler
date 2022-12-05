@@ -1,3 +1,4 @@
+import downloadTable from "../downloadPDF.js";
 import coloring from "../utils/coloring.js";
 import makeFileFromText, { downloadFile } from "../utils/filedownload.js";
 import { timerMessage } from "../utils/timers.js";
@@ -9,7 +10,6 @@ export const onFileTabClick = function (element, handle) {
         const activeTab   = document.querySelector(".breadcumb--active")
         const codeEditor  = document.getElementById("codeeditor")
         const lineNumbers = document.querySelector('.line-numbers')
-
 
         if (target.nodeName == "ION-ICON") return
         if (!tabOpen) return
@@ -53,7 +53,6 @@ export const onChangeCode = function (element, handle) {
     const lineNumbers = document.querySelector('.line-numbers')
     let customArea = document.querySelector(".custom-area");
     let backdrop   = document.querySelector(".backdrop");
-
 
     function debounce(func, timeout = 300) {
         let timer;
@@ -132,7 +131,7 @@ export const onCloseTab = (element, handler, flush) => {
     })
 }
 
-export const onClickAnalyzer = (element, handler, analyzer, semantic, triplo) => {
+export const onClickAnalyzer = (element, handler, analyzer, semantic, triplo, optimize, toAssembly) => {
     element.addEventListener("click", () => {
         const code = document.getElementById("codeeditor")
         const cust = document.getElementById("custom-area")
@@ -140,11 +139,33 @@ export const onClickAnalyzer = (element, handler, analyzer, semantic, triplo) =>
         const result = analyzer(code.value)
         const errors = semantic(code.value, result)
         const tripTb = triplo(code.value)
+        const optimized = optimize(code.value) 
+        const triploOpt = triplo(optimized)
+        const assemblytransformed = toAssembly(optimized)
+        console.log(optimized)
+        console.log(assemblytransformed)
 
-        console.table(tripTb)
+        handler(result, errors, tripTb, triploOpt)
+
+        const triploTable = document.getElementById(`generated_table_triplo`)
+        const triploTableOpt = document.getElementById(`generated_optimized_triplo`)
+        const btnGenerate = document.getElementById(`button-pdf`)
+        const btnGenerateOpt = document.getElementById(`button-pdfoptimizado`)
+        const btnGenerateAssembly = document.getElementById(`button-assembly`)
 
 
-        handler(result, errors, tripTb)
+        btnGenerate.addEventListener("click", () => {
+            downloadTable(triploTable)
+        })
+
+        btnGenerateOpt.addEventListener("click", () => {
+            downloadTable(triploTableOpt)
+        })
+
+        btnGenerateAssembly.addEventListener("click", () => {
+            const fileUrl = makeFileFromText(assemblytransformed.replace(/^ {14}/gm, ''))
+            downloadFile(fileUrl, "codigo.asm")
+        })
     })
 }
 
@@ -192,6 +213,5 @@ export const onDowloadCode = (element, handler) => {
 
 export const onHighLightLineErrors = () => {
     const codeeditor = document.getElementById("coeeditor");
-    console.log(codeeditor)
 }
 
