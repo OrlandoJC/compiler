@@ -156,7 +156,7 @@ class Compiler {
                 // recorre cada par de elementos sobrantes de la asignacion omitiendo el primero(que sera la asignacion final)
                 for (let i = 1; i < tokens.length; i++) {
                     //verifica que el operador utilizado sea valido
-                    if (["=", "-", "/", "+", "*"].includes(tokens[i])) {
+                    if (["=", "-", "/", "+", "*", "%"].includes(tokens[i])) {
                         //añade la linea del triplo a la tabla
                         triploTable.push({ pos: lineCounter++, dato_obj: "T1", dato_fuente: tokens[i + 1], operador: tokens[i] })
                     }

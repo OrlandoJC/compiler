@@ -141,7 +141,7 @@ export const onClickAnalyzer = (element, handler, analyzer, semantic, triplo, op
         const tripTb = triplo(code.value)
         const optimized = optimize(code.value) 
         const triploOpt = triplo(optimized)
-        const assemblytransformed = toAssembly(optimized)
+        const assemblytransformed = toAssembly(code.value)
         console.log(optimized)
         console.log(assemblytransformed)
 
