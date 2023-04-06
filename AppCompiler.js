@@ -1,9 +1,7 @@
-import Editor from './Editor.js'
+import Editor from './core/Editor.js'
 import coloring from './utils/coloring.js';
-import Compiler from './Compiler.js';
+import Compiler from './core/Compiler.js';
 import { onFileTabClick, onFilePanelClick, onChangeCode, onCloseTab, onClickAnalyzer, onAddFile, onDowloadCode, onHighLightLineErrors } from './events/index.js'
-import downloadTable from './downloadPDF.js';
-
 
 class AppCompiler {
     constructor() {
@@ -26,8 +24,6 @@ class AppCompiler {
             </div>
         `
     }
-
-
 
     fileMarkup(file) {
         return `

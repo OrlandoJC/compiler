@@ -1,4 +1,4 @@
-import downloadTable from "../downloadPDF.js";
+import downloadTable from "../utils/downloadPDF.js";
 import coloring from "../utils/coloring.js";
 import makeFileFromText, { downloadFile } from "../utils/filedownload.js";
 import { timerMessage } from "../utils/timers.js";

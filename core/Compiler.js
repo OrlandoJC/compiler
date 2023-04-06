@@ -1,8 +1,8 @@
-import { cleanSpaces } from "./utils/arrays.js";
-import { getMatches, isValid, stringLines } from "./utils/strings.js";
-import { TYPE_ERROR, VAR_ERROR } from "./config/error.constants.js";
-import regex from './config/type.matchers.js'
-import rules from "./config/rules.matchers.js";
+import { cleanSpaces } from "../utils/arrays.js";
+import { getMatches, isValid, stringLines } from "../utils/strings.js";
+import { TYPE_ERROR, VAR_ERROR } from "../config/error.constants.js";
+import regex from '../config/type.matchers.js'
+import rules from "../config/rules.matchers.js";
 import CompilerError from "./CompilerError.js";
 import ASTGenerator from "./ASTGenerator.js";
 import ObjectCode from "./ObjectCode.js";
